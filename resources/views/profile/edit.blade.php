@@ -55,6 +55,41 @@
                 khẩu</button>
         </form>
 
+        {{-- Thêm địa chỉ --}}
+
+        <form action="{{ route('user-info.update', Auth::user()->id) }}" method="POST">
+            @csrf
+            @method('PUT')
+
+            <div class="mb-4">
+                <label for="phone" class="block text-gray-700 font-semibold mb-2">Số điện thoại</label>
+                <input type="text" name="phone" id="phone"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required
+                    value="{{ $userInfo->PhoneNumber }}">
+            </div>
+
+            <div class="mb-4">
+                <label for="address" class="block text-gray-700 font-semibold mb-2">Địa chỉ</label>
+                <input type="text" name="address" id="address"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required
+                    value="{{ $userInfo->Address }}">
+            </div>
+            <div>
+                <label class="block font-medium">Địa chỉ</label>
+                <div class="flex gap-3">
+                    <select name="provinces" id="provinces" required>
+                        <option value="">Chọn tỉnh thành...</option>
+                    </select>
+                    <select name="ward" id="ward" required>
+                        <option value="">Chọn phường/xã...</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition mt-5">
+                Thêm địa chỉ
+            </button>
+        </form>
+
         {{-- Xóa tài khoản --}}
         <form method="POST" action="{{ route('profile.destroy') }}"
             onsubmit="return confirm('Bạn có chắc chắn muốn xóa tài khoản? Hành động này không thể hoàn tác.')">
@@ -66,3 +101,50 @@
 
     </div>
 @endsection
+
+@push('script')
+
+    <script>
+
+        const provinces = document.querySelector('#provinces');
+        const ward = document.querySelector('#ward');
+        const provincesCode = @json($userInfo->DistrictCode);
+        const wardCode = @json($userInfo->WardCode);
+        fetch('https://api.goship.io/api/ext_v1/cities')
+            .then(response => response.json())
+            .then(data => {
+                data.data.forEach(province => {
+                    const option = document.createElement('option');
+                    option.value = province.id;
+                    option.textContent = province.name;
+                    option.value == provincesCode ? option.selected = true : '';
+                    provinces.appendChild(option);
+
+                });
+                provinces.addEventListener('change', () => {
+                    console.log(provinces.value);
+                    if (provinces.value) {
+                        fetch(`https://api.goship.io/api/ext_v1/cities/${provinces.value}/districts`)
+                            .then(response => response.json())
+                            .then(data => {
+                                let html = '';
+                                data.data.forEach(district => {
+                                    html += `<option value="${district.id}" ${wardCode == district.id ? 'selected' : ''}>${district.name}</option>`;
+                                })
+                                ward.innerHTML = html;
+                            })
+                    } else {
+                        ward.innerHTML = '<option value="">Chọn phường/xã...</option>';
+
+                    }
+                }
+                )
+                ward.addEventListener('change', () => {
+                    console.log(ward.value);
+                })
+            });
+
+
+    </script>
+
+@endpush

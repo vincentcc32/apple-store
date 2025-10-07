@@ -18,6 +18,7 @@ use App\Http\Controllers\paymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ratingController;
 use App\Http\Controllers\searchController;
+use App\Http\Controllers\userInfoController;
 use App\Http\Middleware\roleMiddleware;
 use App\Models\Order;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +45,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // user infor
+    Route::put('/user-info/{id}', [userInfoController::class, 'update'])->name('user-info.update');
 
     // cart
     Route::get('/cart', [cartController::class, 'index'])->name('cart');

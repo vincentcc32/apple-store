@@ -9,6 +9,7 @@ use App\Models\Cart;
 use App\Models\DetailOrder;
 use App\Models\InStock;
 use App\Models\Order;
+use App\Models\UserInFo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -28,7 +29,11 @@ class checkoutController extends Controller
             });
         })->get();
 
-        return view('pages.checkout', compact('cartItems'));
+        $userInfo = UserInFo::where('user_id', Auth::user()->id)->first();
+
+
+
+        return view('pages.checkout', compact('cartItems', 'userInfo'));
     }
 
     /**

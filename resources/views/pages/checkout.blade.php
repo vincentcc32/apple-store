@@ -19,7 +19,7 @@
           @csrf
           <div>
             <label class="block font-medium">Họ tên</label>
-            <input type="text" name="name" value="{{ old('name') }}"
+            <input type="text" name="name" value="{{ Auth::user()->name }}"
               class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-500 @error('name') border-red-500 bg-red-50 text-red-700 @else border-gray-300 @enderror"
               required>
             @error('name')
@@ -30,7 +30,7 @@
           </div>
           <div>
             <label class="block font-medium">Số điện thoại</label>
-            <input type="text" name="phone" value="{{ old('phone') }}" class="w-full border rounded px-3 py-2
+            <input type="text" name="phone" value="{{ $userInfo->PhoneNumber }}" class="w-full border rounded px-3 py-2
             @error('phone') border-red-500 bg-red-50 text-red-700 @else border-gray-300 @enderror" required>
             @error('phone')
               <p class="invalid-feedback" style="font-size: 0.875rem; color: #e53e3e; font-weight: bold;">
@@ -57,7 +57,7 @@
             <textarea name="address"class="w-full border rounded px-3 py-2
             @error('address') border-red-500 bg-red-50 text-red-700 @else border-gray-300 @enderror
             " rows="3" required>
-          {{ old('address') }}
+          {{ $userInfo->Address }}
           </textarea>
           </div>
           <div>
